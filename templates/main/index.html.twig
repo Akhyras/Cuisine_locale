@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello MainController!{% endblock %}
+
+{% block body %}
+<style>
+    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+</style>
+    <div class="conatainer mt-5">
+        <div class="text-center">
+            <h1>Les recettes de vos régions</h1>
+        </div>
+        <div class="row">
+            <div class="col-6">
+             {{ ux_map(map, {style: 'height: 600px;'}) }}
+            </div>
+            <div class="col-6">
+                <form>
+                    <div class="form-group">
+                        <label for="RecipeName">Recette</label>
+                        <input type="text" class="form-control" id="RecipeName" aria-describedby="Recipe" placeholder="Recette">
+                    </div>
+                    <div class="form-group">
+                        <label for="recipe_recipeLatitude" class="form-label required">Latitude</label>
+                        <input type="text" id="recipe_recipeLatitude" name="recipe[recipeLatitude]" required="required" inputmode="decimal" class="form-control" placeholder="47" />
+                    </div>
+                    <div class="form-group">
+                        <label for="recipe_recipeLongitude" class="form-label required">Longitude</label>
+                        <input type="text" id="recipe_recipeLongitude" name="recipe[recipeLongitude]" required="required" inputmode="decimal" class="form-control" placeholder="3" />
+                    </div>
+                    <div class="form-group">
+                        <label for="RecipeDescription" rows="5">Description</label>
+                        <input type="text" class="form-control" id="RecipeDescription" aria-describedby="Recipe" placeholder="étape 1:...">
+                    </div>
+                    <button type="submit" class="btn btn-primary">envoyé</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

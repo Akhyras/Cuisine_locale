@@ -1,0 +1,21 @@
+{
+  "name": "cuisine_region",
+  "version": "1.0.0",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@symfony/webpack-encore": "^5.0.1"
+  },
+  "dependencies": {
+    "leaflet": "^1.9.4"
+  }
+}

@@ -1,0 +1,95 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Créer une nouvelle recette{% endblock %}
+
+{% block body %}
+    <div class="conatainer mt-5">
+        <div class="text-center">
+            <h1>Créer une nouvelle recette</h1>
+        </div>
+
+        <div class="row">
+            <div class="col-6">
+            <div id="map" style="height: 600px; margin-bottom: 20px;"></div>
+            </div>
+            <div class="col-6">
+                <form name="recipe" method="post" action="{{ path('recipe_new') }}" data-turbo="false">
+                    <div class="mb-3">
+                        <label for="recipe_recipeName" class="form-label required">Nom de la recette</label>
+                        <input type="text" id="recipe_recipeName" name="recipe[recipeName]" required="required" class="form-control" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="recipe_recipeLatitude" class="form-label required">Latitude</label>
+                        <input type="text" id="recipe_recipeLatitude" name="recipe[recipeLatitude]" required="required" inputmode="decimal" class="form-control" placeholder="47" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="recipe_recipeLongitude" class="form-label required">Longitude</label>
+                        <input type="text" id="recipe_recipeLongitude" name="recipe[recipeLongitude]" required="required" inputmode="decimal" class="form-control" placeholder="3" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="recipe_recipeDescription" class="form-label required">Description de la recette</label>
+                        <textarea id="recipe_recipeDescription" name="recipe[recipeDescription]" required="required" rows="5" cols="50" placeholder="Étape 1 : ..." class="form-control"></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Créer</button>
+
+                    <input type="hidden" id="recipe__token" name="recipe[_token]" value="{{ csrf_token('recipe') }}" />
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Initialisation de la carte
+            var map = L.map('map').setView([47, 3], 6); // Centrée sur la France
+
+            // Ajout des tuiles OpenStreetMap
+            L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '© OpenStreetMap'
+            }).addTo(map);
+
+            // Ajouter un marqueur déplaçable
+            var marker = L.marker([47, 3], { draggable: true }).addTo(map);
+
+            // Récupérer les champs du formulaire avec les IDs corrects
+            var latitudeField = document.getElementById("recipe_recipeLatitude");
+            var longitudeField = document.getElementById("recipe_recipeLongitude");
+
+            // Vérifier que les champs existent avant de les manipuler
+            if (!latitudeField || !longitudeField) {
+                console.error("Les champs Latitude et Longitude ne sont pas trouvés.");
+                return;
+            }
+
+            // Mettre à jour les champs lorsque le marqueur est déplacé
+            marker.on('dragend', function () {
+                var position = marker.getLatLng();
+                latitudeField.value = position.lat.toFixed(6); // Limite à 6 décimales
+                longitudeField.value = position.lng.toFixed(6);
+            });
+
+            // Repositionner le marqueur et mettre à jour les champs lorsqu'on clique sur la carte
+            map.on('click', function (e) {
+                var latlng = e.latlng;
+                marker.setLatLng(latlng); // Déplace le marqueur
+                latitudeField.value = latlng.lat.toFixed(6);
+                longitudeField.value = latlng.lng.toFixed(6);
+            });
+
+            // Si des coordonnées existent déjà, centrer la carte et placer le marqueur
+            if (latitudeField.value && longitudeField.value) {
+                var lat = parseFloat(latitudeField.value);
+                var lng = parseFloat(longitudeField.value);
+                marker.setLatLng([lat, lng]);
+                map.setView([lat, lng], 14); // Zoom sur les coordonnées
+            }
+        });
+    </script>
+{% endblock %}
